@@ -37,9 +37,7 @@ export default class CBot extends CBotConfig {
       const buzz = this.gameUtils.findSpecialAgent(5, this.game);
 
       const exit = this.gameUtils.getClosestExit(this.game);
-      if (exit){
-        console.log("exit---->" + exit.x + " , " + exit.y)
-      }
+
       const opponentClass = this.game?.players?.opponent?.codyfighter?.class;
 
       const isHunter = opponentClass === "HUNTER";
@@ -225,7 +223,7 @@ export default class CBot extends CBotConfig {
             exitPos
           );
           break;
-
+          
         case "ryo":
           bestTarget = this.gameUtils.getTargetPosition(
             possibleTargets,

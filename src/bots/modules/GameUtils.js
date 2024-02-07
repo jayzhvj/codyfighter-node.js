@@ -1,4 +1,4 @@
-import { TILE_EXIT, TILE_DEATH_PIT } from "../../modules/game-constants.js";
+import { TILE_EXIT, TILE_DEATH_PIT,TILE_TELEPORT } from "../../modules/game-constants.js";
 
 // GameUtils class contains all the basic game logic that can be reused by all bots.
 // Also contains some helper functions that can be used by the bots.
@@ -15,6 +15,15 @@ export default class GameUtils {
     return game.map.reduce((exits, row, y) => {
       row.forEach((tile, x) => {
         if (tile.type === TILE_EXIT) exits.push({ x, y });
+      });
+
+      return exits;
+    }, []);
+  }
+  findTeleport(game) {
+    return game.map.reduce((exits, row, y) => {
+      row.forEach((tile, x) => {
+        if (tile.type === TILE_TELEPORT) exits.push({ x, y });
       });
 
       return exits;
@@ -76,6 +85,25 @@ export default class GameUtils {
 
   getClosestExit(game) {
     const exits = this.findExits(game);
+    let distances = [];
+
+    for (const exit of exits) {
+      const distance = this.distance(
+        game?.players?.bearer?.position?.x,
+        game?.players?.bearer?.position?.y,
+        exit?.x,
+        exit?.y
+      );
+
+      distances.push({ exit, distance });
+    }
+
+    distances.sort((a, b) => a.distance - b.distance);
+
+    return distances[0]?.exit || null;
+  }
+  getClosestTeleport(game) {
+    const exits = this.findTeleport(game);
     let distances = [];
 
     for (const exit of exits) {
