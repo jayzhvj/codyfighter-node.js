@@ -20,7 +20,7 @@ export default class GameUtils {
       return exits;
     }, []);
   }
-  findTeleport(game) {
+  findTeleports(game) {
     return game.map.reduce((teleports, row, y) => {
       row.forEach((tile, x) => {
         if (tile.type === TILE_TELEPORT) teleports.push({ x, y });
@@ -103,7 +103,7 @@ export default class GameUtils {
     return distances[0]?.exit || null;
   }
   getClosestTeleport(game) {
-    const exits = this.findTeleport(game);
+    const teleports = this.findTeleports(game);
     let distances = [];
 
     for (const teleport of teleports) {
