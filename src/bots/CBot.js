@@ -42,53 +42,72 @@ export default class CBot extends CBotConfig {
 
       const isHunter = opponentClass === "HUNTER";
 
-      /*       const isHunterNearby = this.gameUtils.isNearby(
-              this.game?.players?.bearer?.position,
-              this.game?.players?.opponent?.position,
-              2
-            );
-      
-            const isRipperNearby = this.gameUtils.isNearby(
-              this.game.players.bearer?.position,
-              ripper?.position,
-              3
-            );
-      
-            const isRyoCloser = this.gameUtils.isCloser(
-              this.game?.players?.bearer?.position,
-              ryo?.position,
-              exit
-            );
-      
-            const isOpponentCloserToExit = this.gameUtils.isCloser(
-              exit,
-              this.game?.players?.opponent?.position,
-              this.game?.players?.bearer?.position
-            );
-      
-            const avoidRipper = () => {
-              move = this.gameUtils.getFarthestDistanceMove(
-                ripper?.position,
-                this.game
-              );
-      
-              console.log(`${this.getBotName()} - 💀 Avoiding Ripper`);
-            };
-      
-            const avoidHunter = () => {
-              move = this.gameUtils.getFarthestDistanceMove(
-                this.game?.players?.opponent?.position,
-                this.game
-              ); 
-      
-              console.log(`${this.getBotName()} - 🏹 Avoiding Hunter`);
-            };
-      */
+      const isHunterNearby = this.gameUtils.isNearby(
+        this.game?.players?.bearer?.position,
+        this.game?.players?.opponent?.position,
+        2
+      );
+
+      const isRipperNearby = this.gameUtils.isNearby(
+        this.game.players.bearer?.position,
+        ripper?.position,
+        3
+      );
+
+      const isRyoCloser = this.gameUtils.isCloser(
+        this.game?.players?.bearer?.position,
+        ryo?.position,
+        exit
+      );
+
+      const isOpponentCloserToExit = this.gameUtils.isCloser(
+        exit,
+        this.game?.players?.opponent?.position,
+        this.game?.players?.bearer?.position
+      );
+
+      const avoidRipper = () => {
+        move = this.gameUtils.getFarthestDistanceMove(
+          ripper?.position,
+          this.game
+        );
+
+        console.log(`${this.getBotName()} - 💀 Avoiding Ripper`);
+      };
+
+      const avoidHunter = () => {
+        move = this.gameUtils.getFarthestDistanceMove(
+          this.game?.players?.opponent?.position,
+          this.game
+        );
+
+        console.log(`${this.getBotName()} - 🏹 Avoiding Hunter`);
+      };
+
       const goToExit = () => {
         move = this.gameUtils.getShortestDistanceMove([exit], this.game);
 
         console.log(`${this.getBotName()} - ❎ Finding Exit`);
       };
+
+      const goToRyo = () => {
+        move = this.gameUtils.getShortestDistanceMove(
+          [ryo?.position],
+          this.game
+        );
+
+        console.log(`${this.getBotName()} - 🐽 Seeking Ryo`);
+      };
+
+      const chaseOpponent = () => {
+        move = this.gameUtils.getShortestDistanceMove(
+          [this.game.players.opponent.position],
+          this.game
+        );
+
+        console.log(`${this.getBotName()} - ⚔ Chasing opponent`);
+      };
+
       const stay = () => {
         move = this.gameUtils.getShortestDistanceMove(
           [this.game.players.bearer.position],
@@ -97,61 +116,42 @@ export default class CBot extends CBotConfig {
 
         console.log(`${this.getBotName()} - 🏖 Just chilling`);
       };
-      /* 
-            const goToRyo = () => {
-              move = this.gameUtils.getShortestDistanceMove(
-                [ryo?.position],
-                this.game
-              );
-      
-              console.log(`${this.getBotName()} - 🐽 Seeking Ryo`);
-            };
-      
-            const chaseOpponent = () => {
-              move = this.gameUtils.getShortestDistanceMove(
-                [this.game.players.opponent.position],
-                this.game
-              );
-      
-              console.log(`${this.getBotName()} - ⚔ Chasing opponent`);
-            };
-      
-      
-            if (ripper && isRipperNearby) {
-              this.strategy = "ripper";
-      
-              avoidRipper();
-      
-              return (this.game = await this.gameAPI.move(
-                this.ckey,
-                move?.x,
-                move?.y
-              ));
-            }
-      
-            if (ryo && buzz) {
-              this.strategy = "ryo";
-      
-              goToRyo();
-      
-              return (this.game = await this.gameAPI.move(
-                this.ckey,
-                move?.x,
-                move?.y
-              ));
-            }
-      
-            if (!isHunter) {
-              this.strategy = "hunter";
-      
-              chaseOpponent();
-      
-              return (this.game = await this.gameAPI.move(
-                this.ckey,
-                move?.x,
-                move?.y
-              ));
-            } */
+
+      if (ripper && isRipperNearby) {
+        this.strategy = "ripper";
+
+        avoidRipper();
+
+        return (this.game = await this.gameAPI.move(
+          this.ckey,
+          move?.x,
+          move?.y
+        ));
+      }
+
+      if (ryo && buzz) {
+        this.strategy = "ryo";
+
+        goToRyo();
+
+        return (this.game = await this.gameAPI.move(
+          this.ckey,
+          move?.x,
+          move?.y
+        ));
+      }
+
+      if (!isHunter) {
+        this.strategy = "hunter";
+
+        chaseOpponent();
+
+        return (this.game = await this.gameAPI.move(
+          this.ckey,
+          move?.x,
+          move?.y
+        ));
+      }
 
       if (exit) {
         this.strategy = "exit";
@@ -176,7 +176,7 @@ export default class CBot extends CBotConfig {
   async castSkills() {
     if (!this.game?.players?.bearer?.is_player_turn) return;
 
- /*    for (const skill of this.game.players.bearer.skills) {
+    for (const skill of this.game.players.bearer.skills) {
       const hasEnoughEnergy =
         skill.cost <= this.game.players.bearer.stats.energy;
 
@@ -223,7 +223,7 @@ export default class CBot extends CBotConfig {
             exitPos
           );
           break;
-
+          
         case "ryo":
           bestTarget = this.gameUtils.getTargetPosition(
             possibleTargets,
@@ -277,6 +277,6 @@ export default class CBot extends CBotConfig {
 
       await this.castSkills();
       break;
-    } */
+    }
   }
 }
