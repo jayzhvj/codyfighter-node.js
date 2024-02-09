@@ -6,6 +6,9 @@ import { GAME_STATUS_PLAYING } from "../modules/game-constants.js";
 // The bot algorithm is implemented in the playGame() method.
 // Check the API documentation at https://codyfight.com/api-doc/.
 
+////////////////
+//HUNTY QUEST//
+//////////////
 export default class CBot extends CBotConfig {
   constructor(app, url, ckey, mode, i, isDev = false) {
     super(app, url, ckey, mode, i, isDev);
