@@ -21,12 +21,12 @@ export default class GameUtils {
     }, []);
   }
   findTeleport(game) {
-    return game.map.reduce((exits, row, y) => {
+    return game.map.reduce((teleports, row, y) => {
       row.forEach((tile, x) => {
-        if (tile.type === TILE_TELEPORT) exits.push({ x, y });
+        if (tile.type === TILE_TELEPORT) teleports.push({ x, y });
       });
 
-      return exits;
+      return teleports;
     }, []);
   }
 
@@ -106,20 +106,20 @@ export default class GameUtils {
     const exits = this.findTeleport(game);
     let distances = [];
 
-    for (const exit of exits) {
+    for (const teleport of teleports) {
       const distance = this.distance(
         game?.players?.bearer?.position?.x,
         game?.players?.bearer?.position?.y,
-        exit?.x,
-        exit?.y
+        teleport?.x,
+        teleport?.y
       );
 
-      distances.push({ exit, distance });
+      distances.push({ teleport, distance });
     }
 
     distances.sort((a, b) => a.distance - b.distance);
 
-    return distances[0]?.exit || null;
+    return distances[0]?.teleport || null;
   }
 
   getTargetPosition(possibleTargets, target, towards = true) {
