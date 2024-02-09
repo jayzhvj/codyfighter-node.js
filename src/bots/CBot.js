@@ -28,16 +28,27 @@ export default class CBot extends CBotConfig {
     }
   }
 
+  //MakeMove. Actions are chosen in order
   async makeMove() {
     if (this.game.players.bearer.is_player_turn) {
       let move = this.gameUtils.getRandomMove(this.game);
+
 
       const ryo = this.gameUtils.findSpecialAgent(1, this.game);
       const ripper = this.gameUtils.findSpecialAgent(4, this.game);
       const buzz = this.gameUtils.findSpecialAgent(5, this.game);
 
+      //Detect exit x,y
       const exit = this.gameUtils.getClosestExit(this.game);
+      if (exit) {
+        console.log("exit---->" + exit.x + " , " + exit.y)
+      }
 
+      //Detect teleport x,y
+      const teleport = this.gameUtils.getClosestTeleport(this.game)
+      if (teleport) { console.log("teleport--->" + teleport.x + " , " + teleport.y) }
+
+      //Get the opponent class
       const opponentClass = this.game?.players?.opponent?.codyfighter?.class;
 
       const isHunter = opponentClass === "HUNTER";
@@ -84,12 +95,31 @@ export default class CBot extends CBotConfig {
         console.log(`${this.getBotName()} - 🏹 Avoiding Hunter`);
       };
 
+      //QUEST TELEPORT --> Chase the teleport before all
+      const goToTeleport = () => {
+        move = this.gameUtils.getShortestDistanceMove([teleport], this.game);
+
+        console.log(`${this.getBotName()} - 🧿 Finding teleport`);
+      };
+
       const goToExit = () => {
         move = this.gameUtils.getShortestDistanceMove([exit], this.game);
 
         console.log(`${this.getBotName()} - ❎ Finding Exit`);
       };
 
+      //QUEST TELEPORT --> Chase the teleport before all
+      if (teleport) {
+        this.strategy = "teleport";
+
+        goToTeleport();
+
+        return (this.game = await this.gameAPI.move(
+          this.ckey,
+          move?.x,
+          move?.y
+        ));
+      }
       const goToRyo = () => {
         move = this.gameUtils.getShortestDistanceMove(
           [ryo?.position],
@@ -152,7 +182,6 @@ export default class CBot extends CBotConfig {
           move?.y
         ));
       }
-
       if (exit) {
         this.strategy = "exit";
 
@@ -164,7 +193,6 @@ export default class CBot extends CBotConfig {
           move?.y
         ));
       }
-
       this.strategy = "stay";
 
       stay();
@@ -186,7 +214,7 @@ export default class CBot extends CBotConfig {
         !hasEnoughEnergy
       )
         continue;
-
+      const teleportPos = this.gameUtils.getClosestTeleport(this.game);
       const exitPos = this.gameUtils.getClosestExit(this.game);
       const ryoPos = this.gameUtils.findSpecialAgent(1, this.game)?.position;
       const ripperPos = this.gameUtils.findSpecialAgent(4, this.game)?.position;
@@ -223,7 +251,14 @@ export default class CBot extends CBotConfig {
             exitPos
           );
           break;
-          
+        case "teleport":
+          bestTarget = this.gameUtils.getTargetPosition(
+            possibleTargets,
+            teleportPos,
+            //set true to force teleport
+          );
+          break;
+
         case "ryo":
           bestTarget = this.gameUtils.getTargetPosition(
             possibleTargets,
