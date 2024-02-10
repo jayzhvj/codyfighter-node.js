@@ -18,10 +18,10 @@ export function codyfighterVariables(envs) {
     .map(({ key, value }, i) => {
       const ckey = value;
       const mode = gameModes.find(({ key }) => key === `GAME_MODE_${i}`)?.value;
-
+      //DEFINE OPPONENT
       return { ckey, mode };
     })
     .filter((codyfighter) => codyfighter);
-
+    console.log(codyfighters)
   return codyfighters;
 }

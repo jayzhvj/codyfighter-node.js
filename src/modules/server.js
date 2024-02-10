@@ -9,13 +9,14 @@ export default function server(app) {
     log(`Codyfighters running on port ${app.config.port}`, "info");
 
     const codyfighters = app.config.api.codyfighters;
-
+    //console.log("codyfighters--->"+app.config.api.codyfighters[0].opponent)
     codyfighters.forEach((codyfighter, index) => {
       const bot = new CBot(
         app,
         app.config.api.url,
         codyfighter.ckey,
         codyfighter.mode,
+    //    codyfighter.opponent,
         index
       );
 

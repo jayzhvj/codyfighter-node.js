@@ -9,7 +9,6 @@ import { GAME_STATUS_PLAYING } from "../modules/game-constants.js";
 export default class CBot extends CBotConfig {
   constructor(app, url, ckey, mode, i, isDev = false) {
     super(app, url, ckey, mode, i, isDev);
-
     this.gameUtils = new GameUtils();
     this.strategy = "ryo";
   }

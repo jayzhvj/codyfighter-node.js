@@ -21,7 +21,9 @@ export default class CBotConfig {
     this.game = {};
     this.ckey = ckey;
     this.mode = mode;
+  //  this.opponent = opponent
     this.gameAPI = new GameAPI(url);
+    console.log(url)
   }
 
   getBotName() {
@@ -104,6 +106,8 @@ export default class CBotConfig {
 
   async initGame() {
     this.game = await this.gameAPI.init(this.ckey, this.mode, null);
+    //VS FRIEND
+   // this.game = await this.gameAPI.init(this.ckey, this.mode,"codyfighter-694850836", null);
 
     const name = this.game.players.bearer.name;
     const dashboardUrl = this.url.replace("game.", "").replace("game-", "");
